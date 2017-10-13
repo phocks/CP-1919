@@ -1,5 +1,6 @@
 // A node.js script to try to convert svg points of Pulsar CP 1919 into usable data
 var pulses = require("./cp-edited");
+var fs = require('fs');
 
 pulses.reverse();
 
@@ -18,6 +19,14 @@ for (let i = 0; i < pulses.length; i++) {
 }
 
 console.log(pulseArray);
+
+fs.writeFile("./test", JSON.stringify(pulseArray, null, 2), 'utf-8', function(err) {
+  if(err) {
+      return console.log(err);
+  }
+
+  console.log("The file was saved!");
+}); 
 
 function getPulseLevels(pulse) {
   var levels = pulses[pulse].map((elem, i) => {

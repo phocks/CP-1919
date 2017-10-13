@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang=en>
+
+<head>
+  <meta charset=utf-8>
+  <title>CP 1919</title>
+</head>
+
+<body>
+  <svg></svg>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script>
+    var width = 960;
+    var height = 960;
+
+    var svg = d3.select("svg")
+      .style("background-color", "black")
+      .style("min-width", width + "px")
+      .style("min-height", height + "px");
+
+    var xScale = d3.scaleLinear()
+      .domain([0, 700])
+      .range([100, width]);
+
+    var yScale = d3.scaleLinear()
+      .domain([0, 600])
+      .range([height, 0]);
+
+    // Load data async
+    d3.queue(2)
+      .defer(d3.json, "./data.json")
+      .await(processData);
+
+    var valueline = d3.line()
+      .x(function (d) {
+        if (d[0] > 620) return xScale(620);
+        return xScale(d[0]);
+      })
+      .y(function (d) { 
+        return yScale(d[1]); 
+      });
+
+    var g = svg.append("g")
+      .attr("transform", "translate(0, -850)");
+
+    function processData(error, data) {
+      data.forEach(function (element, i) {
+        g.append("path")
+          .data([element])
+          .style("stroke", "white")
+          .style("stroke-width", "1.4px")
+          .attr("class", "line")
+          .attr("transform", "translate(0," + 10 * i + ")")
+          .attr("d", valueline);
+      });
+    }
+
+  </script>
+</body>
+
+</html>
